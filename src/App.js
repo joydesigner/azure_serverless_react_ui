@@ -11,6 +11,7 @@ import {
 
 import './App.css';
 import api from './Api';
+import Auth from './Auth';
 
 class App extends Component {
     state = {
@@ -18,7 +19,7 @@ class App extends Component {
         user_location: '',
         user_interests: '',
         all_user_data: [],
-        current_user: 'user2@gmail.com'
+        current_user: Auth.currentUser().emails[0]
     };
 
     componentDidMount() {
@@ -28,7 +29,8 @@ class App extends Component {
     getUserData () {
         api({
             method: 'get',
-            url: '/GetData?email=' + this.state.current_user
+            url: '/GetData?email=' + this.state.current_user,
+            headers: {Authorization: Auth.getToken()}
         }).then((response) => {
             if(response.data[0])
             {
@@ -48,6 +50,7 @@ class App extends Component {
         api({
             method: 'put',
             url: '/SaveData?email=' + this.state.current_user,
+            headers: {Authorization: Auth.getToken()},
             data: {
                 location: this.state.user_location,
                 interests: this.state.user_interests
@@ -64,7 +67,8 @@ class App extends Component {
     deleteUserData() {
         api({
             method: 'delete',
-            url: '/DeleteData?email=' + this.state.current_user
+            url: '/DeleteData?email=' + this.state.current_user,
+            headers: {Authorization: Auth.getToken()}
         }).then((response) => {
             this.setState({
                 user_location: '',
@@ -80,7 +84,8 @@ class App extends Component {
     getAllUserData () {
         api({
             method: 'get',
-            url: '/GetAllData'
+            url: '/GetAllData',
+            headers: {Authorization: Auth.getToken()}
         }).then((response) => {
             this.setState({
                 all_user_data: response.data,
@@ -138,7 +143,7 @@ class App extends Component {
                         <Button variant="danger" className="buttonGap" onClick={() => this.deleteUserData()} >
                             Delete My Data
                         </Button>
-                        <Button variant="info">
+                        <Button variant="info" onClick={() => Auth.logout()}>
                             Sign Out
                         </Button>
                     </div>
