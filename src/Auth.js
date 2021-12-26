@@ -1,4 +1,4 @@
-import authentication from 'jwt-decode';
+import authentication from '@kdpw/msal-b2c-react';
 import decodeJWT from 'jwt-decode';
 
 class Auth {
